@@ -1,20 +1,21 @@
 import os
 import logging
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
+from telegram.ext import (
+    ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
+)
 import yt_dlp
 
 # Включаем логирование
 logging.basicConfig(level=logging.INFO)
 
-# Получаем токен из переменной окружения
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
-# Хендлер команды /start
+# Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привет! Пришли мне ссылку на Instagram Reels или видео.")
+    await update.message.reply_text("Привет! Пришли ссылку на Instagram Reels или видео.")
 
-# Хендлер ссылок на Instagram
+# Обработка ссылок Instagram
 async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text.strip()
     if "instagram.com" not in url:
@@ -28,7 +29,7 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
             'format': 'best',
             'outtmpl': 'video.%(ext)s',
             'quiet': True,
-            'cookiefile': 'cookies.txt'  # вот здесь мы подключаем cookies
+            'cookies': 'cookies.txt',  # <- путь к cookies.txt
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -44,17 +45,15 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
         logging.error(f"Ошибка при скачивании: {e}")
         await update.message.reply_text("Не удалось скачать видео 😢")
 
-# Запуск бота
+# Основной запуск
 async def main():
-    application = ApplicationBuilder().token(BOT_TOKEN).build()
-
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_instagram_link))
-
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_instagram_link))
     logging.info("Бот запущен. Ожидаю сообщения...")
-    await application.run_polling()
+    await app.run_polling()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
 
