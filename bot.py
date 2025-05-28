@@ -9,13 +9,10 @@ import yt_dlp
 logging.basicConfig(level=logging.INFO)
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привет! Пришли мне ссылку на Instagram Reels или видео.")
-
 async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text.strip()
     if "instagram.com" not in url:
-        await update.message.reply_text("Это не ссылка на Instagram.")
+        await update.message.reply_text("Это не похоже на ссылку из Instagram.")
         return
 
     await update.message.reply_text("Скачиваю видео, подожди...")
@@ -25,8 +22,7 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
             'format': 'best',
             'outtmpl': 'video.%(ext)s',
             'quiet': True,
-            'cookiesfrombrowser': ('chrome',),  # если используешь cookies из браузера
-            'cookiefile': 'cookies.txt'         # путь к cookies.txt
+            'cookiefile': 'cookies.txt'
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
