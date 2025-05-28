@@ -1,26 +1,21 @@
 import os
 import logging
-import asyncio
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 )
 import yt_dlp
 
-# Включаем логирование
 logging.basicConfig(level=logging.INFO)
-
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
-# Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привет! Пришли ссылку на Instagram Reels или видео.")
+    await update.message.reply_text("Привет! Пришли мне ссылку на Instagram Reels или видео.")
 
-# Обработка ссылок
 async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text.strip()
     if "instagram.com" not in url:
-        await update.message.reply_text("Это не похоже на ссылку из Instagram.")
+        await update.message.reply_text("Это не ссылка на Instagram.")
         return
 
     await update.message.reply_text("Скачиваю видео, подожди...")
@@ -30,7 +25,8 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
             'format': 'best',
             'outtmpl': 'video.%(ext)s',
             'quiet': True,
-            'cookies': 'cookies.txt',
+            'cookiesfrombrowser': ('chrome',),  # если используешь cookies из браузера
+            'cookiefile': 'cookies.txt'         # путь к cookies.txt
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -46,23 +42,14 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
         logging.error(f"Ошибка при скачивании: {e}")
         await update.message.reply_text("Не удалось скачать видео 😢")
 
-# Основной запуск
-async def run_bot():
+def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_instagram_link))
-    logging.info("Бот запущен. Ожидаю сообщения...")
-    await app.run_polling()
 
-# Универсальный запуск
+    logging.info("Бот запущен. Ожидаю сообщения...")
+    app.run_polling()
+
 if __name__ == "__main__":
-    try:
-        asyncio.run(run_bot())
-    except RuntimeError as e:
-        if "cannot be called from a running event loop" in str(e).lower():
-            import nest_asyncio
-            nest_asyncio.apply()
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(run_bot())
-        else:
-            raise
+    main()
+
