@@ -1,0 +1,9 @@
+
+services:
+  - type: web
+    name: telegram-instabot
+    env: python
+    buildCommand: ""
+    startCommand: ./start.sh
+    autoDeploy: true
+    branch: main
