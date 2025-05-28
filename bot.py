@@ -32,7 +32,9 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
             "format": "best",
             "outtmpl": "video.%(ext)s",
             "quiet": True,
-            "cookies": "cookies.txt",  # Путь к cookies.txt в корне проекта
+            "cookiefile": "cookies.txt",  # Путь к cookies.txt в корне проекта
+            "username": "antkopatich",
+            "password": "EDFRTGyh!345",
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
