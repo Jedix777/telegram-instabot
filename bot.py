@@ -1,59 +1,59 @@
 import os
 import logging
+import httpx
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 )
-import yt_dlp
-import asyncio
 
-# Включаем логирование
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO
-)
+# Логирование
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Получаем токен из переменной окружения
+# Токен бота и ключ API
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-if not BOT_TOKEN:
-    raise ValueError("Переменная окружения BOT_TOKEN не задана")
+RAPIDAPI_KEY = os.environ.get("RAPIDAPI_KEY")
 
 # Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "Привет! Пришли мне ссылку на Instagram Reels или видео — я скачаю его для тебя 📥"
-    )
+    await update.message.reply_text("Привет! Пришли мне ссылку на Instagram Reels или видео 📽️")
 
-# Обработка сообщений с ссылками
+# Обработка ссылок Instagram
 async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text.strip()
-    
     if "instagram.com" not in url:
-        await update.message.reply_text("Пожалуйста, пришли ссылку на Instagram Reels.")
+        await update.message.reply_text("Это не похоже на ссылку из Instagram.")
         return
 
-    await update.message.reply_text("Скачиваю видео, подожди немного...")
+    await update.message.reply_text("⏳ Скачиваю видео через API...")
+
+    api_url = "https://instagram-downloader8.p.rapidapi.com/ig/download"
+    headers = {
+        "X-RapidAPI-Key": RAPIDAPI_KEY,
+        "X-RapidAPI-Host": "instagram-downloader8.p.rapidapi.com"
+    }
 
     try:
-        ydl_opts = {
-            'format': 'best',
-            'outtmpl': 'video.%(ext)s',
-            'quiet': True,
-        }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            filename = ydl.prepare_filename(info)
+        async with httpx.AsyncClient() as client:
+            response = await client.get(api_url, params={"url": url}, headers=headers)
+            data = response.json()
 
-        with open(filename, 'rb') as f:
-            await update.message.reply_video(video=f)
+        video_url = data.get("media")
+        if not video_url:
+            await update.message.reply_text("❌ Не удалось получить видео.")
+            return
 
-        os.remove(filename)
+        async with httpx.AsyncClient() as client:
+            video_response = await client.get(video_url)
+            video_bytes = video_response.content
+
+        await update.message.reply_video(video=video_bytes)
 
     except Exception as e:
-        logging.error(f"Ошибка при скачивании: {e}")
-        await update.message.reply_text("Произошла ошибка при загрузке видео 😢")
+        logger.error(f"Ошибка при скачивании: {e}")
+        await update.message.reply_text("🚫 Произошла ошибка при скачивании видео.")
 
-# Основная функция
+# Запуск бота
 async def main():
     application = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -63,15 +63,6 @@ async def main():
     logging.info("Бот запущен. Ожидаю сообщения...")
     await application.run_polling()
 
-# Запуск
-if __name__ == '__main__':
-    try:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
-    except RuntimeError:
-        # fallback для уже запущенного event loop
-        import nest_asyncio
-        nest_asyncio.apply()
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
-
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
