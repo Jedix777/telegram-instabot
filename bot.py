@@ -1,5 +1,6 @@
 import os
 import logging
+import asyncio
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
@@ -15,7 +16,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Привет! Пришли ссылку на Instagram Reels или видео.")
 
-# Обработка ссылок Instagram
+# Обработка ссылок
 async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text.strip()
     if "instagram.com" not in url:
@@ -29,7 +30,7 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
             'format': 'best',
             'outtmpl': 'video.%(ext)s',
             'quiet': True,
-            'cookies': 'cookies.txt',  # <- путь к cookies.txt
+            'cookies': 'cookies.txt',
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -46,14 +47,22 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
         await update.message.reply_text("Не удалось скачать видео 😢")
 
 # Основной запуск
-async def main():
+async def run_bot():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_instagram_link))
     logging.info("Бот запущен. Ожидаю сообщения...")
     await app.run_polling()
 
+# Универсальный запуск
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
-
+    try:
+        asyncio.run(run_bot())
+    except RuntimeError as e:
+        if "cannot be called from a running event loop" in str(e).lower():
+            import nest_asyncio
+            nest_asyncio.apply()
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(run_bot())
+        else:
+            raise
