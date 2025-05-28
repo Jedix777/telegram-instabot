@@ -54,6 +54,14 @@ async def main():
     print("Бот запущен...")
     await app.run_polling()
 
+import asyncio
+
+async def main():
+    await application.initialize()
+    await application.start()
+    print("Бот запущен...")
+    await application.updater.start_polling()
+    await application.updater.idle()
+
 if __name__ == '__main__':
-    import asyncio
     asyncio.run(main())
