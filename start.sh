@@ -1,2 +1,3 @@
 #!/bin/bash
-python bot.py
+echo "Запускаю бота..."
+python3 bot.py
