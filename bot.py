@@ -52,11 +52,9 @@ async def main():
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_instagram_link))
 
-    await application.initialize()
-    await application.start()
-    logging.info("Бот запущен.")
-    await application.updater.start_polling()
-    await application.updater.idle()
+logging.info("Бот запущен.")
+await application.run_polling()
+
 
 if __name__ == '__main__':
     import asyncio
