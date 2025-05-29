@@ -45,8 +45,8 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
         await message.reply_text("Пожалуйста, пришли корректную ссылку на Instagram.")
         return
 
-    url = match.group(0)
-    await message.reply_text("Скачиваю видео, подожди немного...")
+    # url = match.group(0)
+    # await message.reply_text("Скачиваю видео, подожди немного...")
 
     try:
         ydl_opts = {
