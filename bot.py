@@ -1,7 +1,8 @@
 import os
 import logging
 import yt_dlp
-from telegram import Update, ChatAction
+from telegram import Update
+from telegram.constants import ChatAction
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
