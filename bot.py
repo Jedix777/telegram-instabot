@@ -54,8 +54,8 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
             "outtmpl": "video.%(ext)s",
             "quiet": True,
             "cookiefile": "cookies.txt",
-            "username": "antkopatich",
-            "password": "EDFRTGyh!345",
+            # "username": "antkopatich",
+            # "password": "EDFRTGyh!345",
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
