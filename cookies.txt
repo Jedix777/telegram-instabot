@@ -2,15 +2,15 @@
 # http://curl.haxx.se/rfc/cookie_spec.html
 # This is a generated file!  Do not edit.
 
-.instagram.com	TRUE	/	TRUE	1783033505	csrftoken	WPvpTirJp5LGBc2kWrjABC
+.instagram.com	TRUE	/	TRUE	1783036288	csrftoken	WPvpTirJp5LGBc2kWrjABC
 .instagram.com	TRUE	/	TRUE	1783030002	datr	54g3aIrFFx5B-CkVoKz-TaJt
 .instagram.com	TRUE	/	TRUE	1780006714	ig_did	8F134BE3-A9F6-48D2-B28D-8EDCBE41BE36
 .instagram.com	TRUE	/	TRUE	1783030002	mid	aDeI5wALAAGkrDkU_EZukFD-ttm_
-.instagram.com	TRUE	/	TRUE	1749076470	wd	1904x944
+.instagram.com	TRUE	/	TRUE	1749080467	wd	1904x944
 .instagram.com	TRUE	/	TRUE	1783030721	ps_l	1
 .instagram.com	TRUE	/	TRUE	1783030721	ps_n	1
 .instagram.com	TRUE	/	TRUE	1780007614	sessionid	74950732024%3A9XsXd6xkZwrxoZ%3A29%3AAYdp8tfxKZDH3kpOIcF_iQIUi9_iu1rfT4ULn7QELw
-.instagram.com	TRUE	/	TRUE	1756249505	ds_user_id	74950732024
+.instagram.com	TRUE	/	TRUE	1756252288	ds_user_id	74950732024
 .instagram.com	TRUE	/	TRUE	1783031677	oo	v1%7C3%3A1748471549
-.instagram.com	TRUE	/	TRUE	1749077707	ig_direct_region_hint	"VLL\05474950732024\0541780008906:01fe324e3c438e15277056753fbca738f977b7e7f5a8415915031113d4a6df60e45d75a6"
-.instagram.com	TRUE	/	TRUE	0	rur	"CLN\05474950732024\0541780009504:01fec542fb853bdc9cd18c7e93848e5a80bd71787c079b62f552e57ef55acc59da826cbb"
+.instagram.com	TRUE	/	TRUE	1749080718	ig_direct_region_hint	"VLL\05474950732024\0541780011916:01feea75500f81661c1da40da214603f3f095accc6af4a50b8de309c94edf0f45db64dac"
+.instagram.com	TRUE	/	TRUE	0	rur	"CLN\05474950732024\0541780091450:01fe1090fc023fa9df7c328d1c6cddbe8023a70e745320f949e6ff56cc1d39d48054acf1"
